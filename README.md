@@ -4,6 +4,7 @@ Only boot from SD, the main partition is on a Hard drive by USB
 Have a partition mounted at start to be used as storage
 Fixed IP
 Transmission Daemon Installed
+Git installed
 FlexGet installed and configured to read RSS
 Samba to access to edit files
 Kodi installed
@@ -40,7 +41,7 @@ set root=/dev/sd** to point to the partition to load.
 
 Restart the rpi it should boot the system from 
 
-# Have a partition mounted at start to be used as storage
+## Have a partition mounted at start to be used as storage
 
 Install NTFS driver if needed:
 
@@ -79,7 +80,7 @@ Reboot
 
 sudo reboot
 
-# Fixed IP
+## Fixed IP
 
 sudo nano /etc/dhcpcd.conf
 
@@ -91,7 +92,7 @@ static ip_address=192.168.0.10/24
 static routers=192.168.0.1
 static domain_name_servers=192.168.0.1
 
-# Transmission daemon Installed
+## Transmission daemon Installed
 
 sudo apt-get install transmission-daemon
 
@@ -112,9 +113,62 @@ change:
 "rpc-password": "new password",
 "rpc-username": "new username",
     
-Change these two to allow restricted access via IP or disable any restriction.
+Change these two to allow restricted access via IP
 
-"rpc-whitelist": "192.168.1.*",
+"rpc-whitelist": "127.0.0.1,192.168.*.*",
 "rpc-whitelist-enabled": true,
 
+## Git installed
+
+sudo apt-get install git
+
+create ssh key (if needed)
+
+https://help.github.com/en/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+
+Setup your new key in your Git
+## FlexGet installed and configured to read RSS
+https://flexget.com/InstallWizard/Linux
+
+Check python version
+python -V
+
+Install 3.5
+sudo apt-get install python3.5
+
+Change default version
+https://linuxconfig.org/how-to-change-from-default-to-alternative-python-version-on-debian-linux
+
+Install PIP
+
+sudo apt-get install python3-pip
+
+Upgrade setuptools
+
+sudo pip3 install --upgrade setuptools
+
+Install in a virtualenv
+
+sudo pip3 install virtualenv
+
+Create the virtualenv
+
+virtualenv ~/flexget/
+
+Install FlexGet in the virtualenv
+
+cd ~/flexget/
+bin/pip3 install flexget
+
+Setup flexget to be accessible everywhere
+
+sudo update-alternatives --install /usr/local/bin/flexget flexget /home/pi/elements/flexget/bin/flexget 1
+
+Create your config.yml configuration file in ~/.flexget
+
+As example of config.yml: https://github.com/unQualsevol/rpi_flexget_conf
+
+As we want to use transmission we need to install transmissionrpc
+
+pip3 install --upgrade transmissionrpc
 
