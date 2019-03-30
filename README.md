@@ -10,6 +10,15 @@ Kodi installed
 Kodi starts by default
 Can exit, reboot or shutdown from Kodi
 
+## Enable SSH
+Enter sudo raspi-config in a terminal window
+Select Interfacing Options
+Navigate to and select SSH
+Choose Yes
+Select Ok
+Choose Finish
+
+
 ## Only boot from SD, the main partition is on a Hard drive by USB
 TODO: refresh how to create the SD and modify the boot file
 
@@ -83,3 +92,29 @@ static routers=192.168.0.1
 static domain_name_servers=192.168.0.1
 
 # Transmission daemon Installed
+
+sudo apt-get install transmission-daemon
+
+Before changing any configuration always turn off the service:
+
+sudo systemctl stop transmission-daemon
+
+Edit configuration file
+
+sudo nano /etc/transmission-daemon/settings.json
+
+change:
+  
+"download-dir": "/home/pi/elements/Torrent",
+"incomplete-dir": "/home/pi/elements/inprogress",
+"incomplete-dir-enabled": truee,
+
+"rpc-password": "new password",
+"rpc-username": "new username",
+    
+Change these two to allow restricted access via IP or disable any restriction.
+
+"rpc-whitelist": "192.168.1.*",
+"rpc-whitelist-enabled": true,
+
+
