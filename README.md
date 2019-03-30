@@ -2,7 +2,7 @@
 ## Requirements
 ```
 Only boot from SD, the main partition is on a Hard drive by USB
-Have a partition mounted at start to be used as storage
+Have a HDD mounted at start to be used as storage
 Fixed IP
 Transmission Daemon Installed
 Git installed
@@ -13,18 +13,14 @@ Kodi starts by default
 Can exit, reboot or shutdown from Kodi
 ```
 ## Enable SSH
-Enter sudo raspi-config in a terminal window
-
+Enter `sudo raspi-config` in a terminal window
+```
 Select Interfacing Options
-
 Navigate to and select SSH
-
 Choose Yes
-
 Select Ok
-
 Choose Finish
-
+```
 
 ## Only boot from SD, the main partition is on a Hard drive by USB
 TODO: refresh how to create the SD and modify the boot file
@@ -47,7 +43,7 @@ set `root=/dev/sd**` to point to the partition to load.
 
 Restart the rpi it should boot the system from 
 
-## Have a partition mounted at start to be used as storage
+## Have a HDD mounted at start to be used as storage
 
 Install NTFS driver if needed:
 ```
@@ -207,3 +203,53 @@ Restart samba
 ```
 sudo /etc/init.d/samba restart
 ```
+
+## Kodi installed
+```
+sudo apt-get install kodi
+```
+## Kodi starts by default
+https://www.raspberrypi.org/forums/viewtopic.php?t=192499
+
+```
+sudo tee -a /lib/systemd/system/kodi.service <<_EOF_
+[Unit]
+Description = Kodi Media Center
+After = remote-fs.target network-online.target
+Wants = network-online.target
+
+[Service]
+User = pi
+Group = pi
+Type = simple
+ExecStart = /usr/bin/kodi-standalone
+Restart = on-abort
+RestartSec = 5
+
+[Install]
+WantedBy = multi-user.target
+_EOF_
+
+```
+
+```
+sudo systemctl enable kodi.service
+```
+## Can exit, reboot or shutdown from Kodi
+
+```
+sudo mkdir /etc/polkit-1
+sudo mkdir /etc/polkit-1/localauthority
+sudo mkdir /etc/polkit-1/localauthority/50-local.d
+sudo nano /etc/polkit-1/localauthority/50-local.d/kodi.pkla
+```
+put in this file
+```
+[Allow kodi user to shutdown and reboot]
+Identity=unix-group:pi
+Action=org.freedesktop.login1.power-off;org.freedesktop.login1.reboot;org.freedesktop.consolekit.system.*
+ResultActive=yes
+ResultAny=yes
+ResultInactive=no
+```
+Reboot
