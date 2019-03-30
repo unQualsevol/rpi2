@@ -1,22 +1,36 @@
 # rpi2
 ## Requirements
 Only boot from SD, the main partition is on a Hard drive by USB
+
 Have a partition mounted at start to be used as storage
+
 Fixed IP
+
 Transmission Daemon Installed
+
 Git installed
+
 FlexGet installed and configured to read RSS
+
 Samba to access to edit files
+
 Kodi installed
+
 Kodi starts by default
+
 Can exit, reboot or shutdown from Kodi
 
 ## Enable SSH
 Enter sudo raspi-config in a terminal window
+
 Select Interfacing Options
+
 Navigate to and select SSH
+
 Choose Yes
+
 Select Ok
+
 Choose Finish
 
 
@@ -72,6 +86,7 @@ sudo mount /dev/sd** /mnt/volume
 Edit the fstab, but first backup it
 
 sudo cp /etc/fstab /etc/fstab.backup
+
 sudo nano /etc/fstab
 
 /dev/sda1 /mnt/volume ntfs defaults 0 0
@@ -133,8 +148,7 @@ https://flexget.com/InstallWizard/Linux
 Check python version
 python -V
 
-Install 3.5
-sudo apt-get install python3.5
+Keep using Python 2.7, I had lots of problems with 3.5
 
 Change default version
 https://linuxconfig.org/how-to-change-from-default-to-alternative-python-version-on-debian-linux
@@ -145,11 +159,11 @@ sudo apt-get install python3-pip
 
 Upgrade setuptools
 
-sudo pip3 install --upgrade setuptools
+sudo pip install --upgrade setuptools
 
 Install in a virtualenv
 
-sudo pip3 install virtualenv
+sudo pip install virtualenv
 
 Create the virtualenv
 
@@ -158,7 +172,7 @@ virtualenv ~/flexget/
 Install FlexGet in the virtualenv
 
 cd ~/flexget/
-bin/pip3 install flexget
+bin/pip install flexget
 
 Setup flexget to be accessible everywhere
 
@@ -170,5 +184,34 @@ As example of config.yml: https://github.com/unQualsevol/rpi_flexget_conf
 
 As we want to use transmission we need to install transmissionrpc
 
-pip3 install --upgrade transmissionrpc
+pip install --upgrade transmissionrpc
+
+## Samba to access to edit files
+
+https://www.raspberrypi.org/magpi/samba-file-server/
+
+Install samba
+
+sudo apt install samba samba-common-bin
+
+Edit file
+
+sudo nano /etc/samba/smb.conf
+
+append:
+
+
+[name]
+	comment = Elements
+	path = path_to_shared_folder
+  Browseable = yes
+  Writeable = Yes
+  only guest = no
+  create mask = 0777
+  directory mask = 0777
+  Public = yes
+
+Restart samba
+
+sudo /etc/init.d/samba restart
 
